@@ -14,6 +14,7 @@ SinesAudioProcessor::SinesAudioProcessor()
 ), apvts(*this, nullptr, "Parameters", createParams()),synth()
 #endif
 {
+    kbState.addListener(&getMidiMessageCollector());
     scale.setKeyboard(synth.keyboard, 0);
 
     for(auto* ids : {&carrierIds, &fmIds, &rmIds})

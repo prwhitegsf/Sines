@@ -3,7 +3,11 @@ set(CMAKE_CXX_STANDARD 20)
 set(PROJECT_NAME "Sines")
 project("${PROJECT_NAME}" VERSION 0.0.1 LANGUAGES C CXX)
 
-set(FORMATS VST3 AU Standalone)
+if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(FORMATS VST3 AU Standalone)
+else ()
+    set(FORMATS VST3 LV2 Standalone)
+endif ()
 
 include(FetchContent)
 FetchContent_Declare(
@@ -16,8 +20,6 @@ FetchContent_MakeAvailable(JUCE)
 
 juce_add_plugin("${PROJECT_NAME}"
 
-
-        # Change me!
         COMPANY_NAME "PW"
         BUNDLE_ID "PWSines"
 

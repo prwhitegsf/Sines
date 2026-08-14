@@ -64,7 +64,6 @@ private:
 
     void configOSC();
 
-    juce::MidiKeyboardState keyboardState;
     KeyboardComponent keyboardComponent;
     int shownBaseNote { -1 };
     int shownScale { -1 };

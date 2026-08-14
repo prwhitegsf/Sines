@@ -31,17 +31,12 @@ void KeyboardComponent::mouseDown(const juce::MouseEvent& e)
 
     if (kbState.isNoteOn(2,newNote)) 
     {
-     //  heldNotes.erase(newNote);
         kbState.noteOff(2,newNote,0);
         return;
     }
 
-
-
     kbState.noteOn(2, newNote, 1);
- //   heldNotes.insert(newNote);
-
-   }
+}
 
 void KeyboardComponent::mouseUp(const juce::MouseEvent& e)
 {
@@ -59,7 +54,6 @@ juce::String KeyboardComponent::getWhiteNoteText(int midiNoteNumber)
         if (diff % notesPerOctave == 0)
             return juce::String(-1 * diff / notesPerOctave);
 
-
         return {};
     }
     else
@@ -67,7 +61,6 @@ juce::String KeyboardComponent::getWhiteNoteText(int midiNoteNumber)
         auto diff =  midiNoteNumber - baseNote;
         if (diff % notesPerOctave == 0)
             return juce::String(diff / notesPerOctave);
-
 
         return {};
     }

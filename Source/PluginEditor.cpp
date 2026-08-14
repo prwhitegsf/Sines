@@ -16,7 +16,7 @@ SinesAudioProcessorEditor::SinesAudioProcessorEditor (SinesAudioProcessor& p)
           toneComponent1(p.apvts, 1),
           toneComponent2(p.apvts, 2),
           toneComponent3(p.apvts, 3),
-          keyboardComponent(keyboardState, juce::MidiKeyboardComponent::Orientation::horizontalKeyboard)
+          keyboardComponent(audioProcessor.getKeyboardState(), juce::MidiKeyboardComponent::Orientation::horizontalKeyboard)
 {
     startTimerHz(10);
 
@@ -27,7 +27,6 @@ SinesAudioProcessorEditor::SinesAudioProcessorEditor (SinesAudioProcessor& p)
 
 
     keyboardComponent.setMidiChannel(2);
-    keyboardState.addListener(&audioProcessor.getMidiMessageCollector());
 
     initLabel(fmLabel, "Freq Mod");
     initLabel(crLabel, "Carrier");
@@ -35,35 +34,19 @@ SinesAudioProcessorEditor::SinesAudioProcessorEditor (SinesAudioProcessor& p)
     initLabel(mixerLabel, "Mixer");
 
     addAndMakeVisible(scaleComponent);
-    if (juce::JUCEApplication::isStandaloneApp())
-    {
-        addAndMakeVisible(keyboardComponent);
-    }
-
+    addAndMakeVisible(keyboardComponent);
     configOSC();
     addAndMakeVisible(globalHold);
 
     setSize(1000, 830);
 }
 
-SinesAudioProcessorEditor::~SinesAudioProcessorEditor()
-{
-    keyboardState.removeListener(&audioProcessor.getMidiMessageCollector());
-}
+SinesAudioProcessorEditor::~SinesAudioProcessorEditor()=default;
 //==============================================================================
 void SinesAudioProcessorEditor::paint (juce::Graphics& g)
 {
     g.fillAll(juce::Colours::darkgrey);
 
-    if (!juce::JUCEApplication::isStandaloneApp())
-    {
-        g.setColour(juce::Colour(15,15,15));
-        juce::Rectangle<float> filler(500, 720, 250, 100);
-        g.fillRect(filler);
-
-        g.setColour(juce::Colour(105,105,105));
-        g.drawText("... reserved for future use ...", filler, juce::Justification::centred, true);
-    }
 }
 
 void SinesAudioProcessorEditor::resized()
@@ -81,22 +64,9 @@ void SinesAudioProcessorEditor::resized()
     rmLabel.setBounds(0, 390, 1000, 20);
     mixerLabel.setBounds(0, 580, 1000, 20);
 
-    if (juce::JUCEApplication::isStandaloneApp())
-    {
-        scaleComponent.setBounds(0, toneHeight+topMargin, toneWidth, 100);
-        keyboardComponent.setBounds(scaleComponent.getRight(), toneHeight+topMargin, toneWidth, 100);
-        globalHold.setBounds(scaleComponent.getRight() + 500, toneHeight+topMargin, toneWidth, 100);
-    }
-    else
-    {
-        scaleComponent.setBounds(0, toneHeight+topMargin, toneWidth, 100);
-        oscReceiverLabel.setBounds(scaleComponent.getRight() + 10, 730, 125, 20);
-        oscReceiverAddress.setBounds(scaleComponent.getRight() + 10, oscReceiverLabel.getBottom() + 5, 125, 20);
-        // oscSenderLabel.setBounds(oscReceiverLabel.getRight() + 10, 730, 125, 20);
-        // oscSenderAddress.setBounds(oscReceiverLabel.getRight() + 10, oscSenderLabel.getBottom() + 5, 125, 20);
-        globalHold.setBounds(scaleComponent.getRight() + 500, toneHeight+topMargin, toneWidth, 100);
-
-    }
+    scaleComponent.setBounds(0, toneHeight+topMargin, toneWidth, 100);
+    keyboardComponent.setBounds(scaleComponent.getRight(), toneHeight+topMargin, toneWidth * 2, 100);
+    globalHold.setBounds(keyboardComponent.getRight(), toneHeight+topMargin, toneWidth, 100);
 }
 
 void SinesAudioProcessorEditor::timerCallback()
