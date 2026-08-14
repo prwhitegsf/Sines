@@ -26,19 +26,20 @@ cmake --build Builds --config Release
 ```
 
 ### Or download pre-built files
-- [Windows](https://www.philipwhiteaudio.com/media/Sines.zip)
-- [Mac](https://www.philipwhiteaudio.com/media/Sines.zip)
+- [Windows](https://www.philipwhiteaudio.com/media/SinesWindows.zip)
+- [Mac](https://www.philipwhiteaudio.com/media/SinesMac.zip)
 
 ### Usage
 
 ![scale-selection](img/SelectScale-Equal.png)
 ![scale-selection](img/SelectScale-Arist.png)
 
-While PPP allows for standard equal temperament tuning, one of its defining features is the ability to work with several different tuning systems.
+While Sines allows for standard equal temperament tuning, one of its defining features is the ability to work with several different tuning systems.
 Use the dropdown to select the desired tuning. The keyboard updates to show where the octaves occur when the tuning does not have 12 notes/octave.
 
 
 ![TwoTones](img/TwoOscillators.png)
+
 We refer to each column group (consisting of sub modules Freq Mod, Carrier and Ring Mod) as a tone
 
 When a key is pressed:
