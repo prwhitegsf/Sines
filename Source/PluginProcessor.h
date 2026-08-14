@@ -1,0 +1,81 @@
+
+#pragma once
+
+#include <JuceHeader.h>
+#include "Synth/AudioEngine.h"
+#include "Synth/Voice.h"
+#include "Synth/ParameterIds/OscillatorIds.h"
+#include "Synth/ParameterIds/MixerIds.h"
+#include "Scales/Scale.h"
+
+
+class SinesAudioProcessor : public juce::AudioProcessor
+{
+public:
+
+    SinesAudioProcessor();
+    ~SinesAudioProcessor() override;
+
+    void prepareToPlay (double sampleRate, int samplesPerBlock) override;
+    void releaseResources() override;
+    //==============================================================================
+#ifndef JucePlugin_PreferredChannelConfigurations
+    bool isBusesLayoutSupported (const BusesLayout& layouts) const override;
+#endif
+
+    void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
+
+    //==============================================================================
+    juce::AudioProcessorEditor* createEditor() override;
+    bool hasEditor() const override;
+
+    //==============================================================================
+    const juce::String getName() const override;
+
+    bool acceptsMidi() const override;
+    bool producesMidi() const override;
+    bool isMidiEffect() const override;
+    double getTailLengthSeconds() const override;
+
+    //==============================================================================
+    int getNumPrograms() override;
+    int getCurrentProgram() override;
+    void setCurrentProgram (int ) override;
+    const juce::String getProgramName (int) override;
+    void changeProgramName (int, const juce::String&) override;
+
+    //==============================================================================
+    void getStateInformation (juce::MemoryBlock& destData) override;
+    void setStateInformation (const void* data, int sizeInBytes) override;
+
+    Scale scale;
+    juce::MidiMessageCollector& getMidiMessageCollector() noexcept { return midiMessageCollector; }
+
+private:
+    static const int toneCount = 4;
+    juce::MidiMessageCollector midiMessageCollector;
+    std::array<OscillatorIds, toneCount> carrierIds{ OscillatorIds("CR",0),OscillatorIds("CR",1), OscillatorIds("CR", 2),OscillatorIds("CR",3) };
+    std::array<OscillatorIds, toneCount> fmIds{ OscillatorIds("FM",0),OscillatorIds("FM",1), OscillatorIds("FM", 2),OscillatorIds("FM",3) };
+    std::array<OscillatorIds, toneCount> rmIds{ OscillatorIds("RM",0),OscillatorIds("RM",1), OscillatorIds("RM", 2),OscillatorIds("RM",3) };
+    std::array<MixerIds, toneCount> mixerIds{ MixerIds(0),MixerIds(1),MixerIds(2),MixerIds(3) };
+
+public:
+    juce::AudioProcessorValueTreeState apvts;
+
+private:
+
+    juce::AudioProcessorValueTreeState::ParameterLayout createParams();
+
+    AudioEngine synth;
+
+    void updateScale();
+    void updateCarriers(int idx, Voice*& voice) const;
+    void updateFreqMods(int idx, Voice*& voice) const;
+    void updateRingMods(int idx, Voice*& voice) const;
+    void updateLfos(int idx);
+    void updateMixers(int idx);
+
+
+    //==============================================================================
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SinesAudioProcessor)
+};
